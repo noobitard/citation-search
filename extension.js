@@ -34,14 +34,13 @@ function handleScholar(){
             if (cite_url.includes("cites")){
                 body.style.display = "none"
                 window.location.replace(cite_url)
-                return true
+                return
             }
         }
     } catch(err){
         console.log(err)
     }
     body.style.display = body_display
-    return false
 }
 
 function handleGoogle(){
@@ -58,13 +57,15 @@ function handleGoogle(){
 
         if (descriptions.childElementCount == 2){
             console.log(descriptions.children[0])
-            if (descriptions.children[0].childElementCount == 3){
-                let cited_by = descriptions.children[0].children[2]
-                let a_cited_by = document.createElement('a');
-                a_cited_by.setAttribute('href', getCitePage(paper_url));
-                a_cited_by.innerHTML = cited_by.innerHTML;
-
-                cited_by.replaceWith(a_cited_by);
+            if (descriptions.children[0].childElementCount >= 2 && descriptions.children[0].innerHTML.includes("·")){
+                let cited_by = descriptions.children[0].children[descriptions.children[0].childElementCount - 1];
+                // Check if is year
+                if (cited_by.innerHTML.length != 4){
+                    let a_cited_by = document.createElement('a');
+                    a_cited_by.setAttribute('href', getCitePage(paper_url));
+                    a_cited_by.innerHTML = cited_by.innerHTML;
+                    cited_by.replaceWith(a_cited_by);
+                }
             }
             
             if (/https:\/\/arxiv\.org\/abs/.test(paper_url)){
